@@ -1,0 +1,90 @@
+<?php
+require_once("../config/auth.php");
+require_once("../config/permissions.php");
+require_once("../config/DataBase.php");
+requireRole(["Admin","Manager"]);
+
+$employees=(int)$conn->query('SELECT COUNT(*) total FROM employees')->fetch_assoc()['total'];
+$departments=(int)$conn->query('SELECT COUNT(*) total FROM departments')->fetch_assoc()['total'];
+$projects=(int)$conn->query('SELECT COUNT(*) total FROM projects')->fetch_assoc()['total'];
+$attendance=(int)$conn->query('SELECT COUNT(*) total FROM attendance')->fetch_assoc()['total'];
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>OpsFlow | Reports</title>
+<link rel="stylesheet" href="../Assets/CSS/style.css">
+<link rel="stylesheet" href="../Assets/CSS/dashboard.css">
+</head>
+<body>
+<div class="dashboard">
+<?php include("../Includes/sidebar.php");
+ 
+?><main class="main-content">
+<?php include("../Includes/header.php");
+ 
+?>
+<section class="page-heading">
+<h1>Reports</h1>
+<p>Generate operational reports and review workspace performance.</p>
+</section>
+<section class="cards">
+<div class="card">
+<h3>Total employees</h3>
+<h1>
+<?php echo $employees;
+ 
+?></h1>
+<p>Registered people</p>
+</div>
+<div class="card">
+<h3>Departments</h3>
+<h1>
+<?php echo $departments;
+ 
+?></h1>
+<p>Organisational units</p>
+</div>
+<div class="card">
+<h3>Projects</h3>
+<h1>
+<?php echo $projects;
+ 
+?></h1>
+<p>Delivery pipeline</p>
+</div>
+<div class="card">
+<h3>Attendance</h3>
+<h1>
+<?php echo $attendance;
+ 
+?></h1>
+<p>Attendance records</p>
+</div>
+</section>
+
+<div class="project-grid" style="margin-top:20px">
+<div class="content-card">
+<h2 style="margin-top:0">Employee report</h2>
+<p class="muted">Employees, departments, positions and employment status.</p>
+<a href="employees.php" class="btn btn-primary">Open report</a>
+</div>
+<div class="content-card">
+<h2 style="margin-top:0">Project report</h2>
+<p class="muted">Projects, budgets, progress, priorities and status.</p>
+<a href="projects.php" class="btn btn-primary">Open report</a>
+</div>
+<div class="content-card">
+<h2 style="margin-top:0">Attendance report</h2>
+<p class="muted">Attendance dates, statuses and check-in/out times.</p>
+<a href="attendance.php" class="btn btn-primary">Open report</a>
+</div>
+</div>
+
+</main>
+</div>
+</body>
+</html>
