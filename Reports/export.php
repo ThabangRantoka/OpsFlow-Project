@@ -1,22 +1,15 @@
 <?php
 
 require_once("../config/auth.php");
-
 require_once("../config/permissions.php");
-
 require_once("../config/DataBase.php");
-
 
 requireRole(["Admin","Manager"]);
 
-
 header("Content-Type: text/csv");
-
 header("Content-Disposition: attachment; filename=Attendance_Report.csv");
 
-
 $output = fopen("php://output","w");
-
 
 fputcsv($output,[
 "Employee No",
@@ -26,7 +19,6 @@ fputcsv($output,[
 "Check In",
 "Check Out"
 ]);
-
 
 $sql = "
 SELECT
@@ -42,12 +34,9 @@ ON attendance.employee_id = employees.id
 ORDER BY attendance.attendance_date DESC
 ";
 
-
 $result = $conn->query($sql);
 
-
 while($row = $result->fetch_assoc()){
-
 
 fputcsv($output,[
 
@@ -60,13 +49,9 @@ $row["check_out"]
 
 ]);
 
-
 }
 
-
 fclose($output);
-
 exit();
-
 
 ?>

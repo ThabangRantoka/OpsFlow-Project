@@ -1,12 +1,9 @@
 <?php
 require_once("../config/DataBase.php");
 
-
 $notificationCount = 0;
 
-
 if (isset($_SESSION["user_id"])) {
-
 
     $stmt = $conn->prepare("
         SELECT COUNT(*) AS total
@@ -15,50 +12,33 @@ if (isset($_SESSION["user_id"])) {
         AND is_read = 0
     ");
 
-
     if ($stmt) {
 
-
         $stmt->bind_param("i", $_SESSION["user_id"]);
-
         $stmt->execute();
-
 
         $result = $stmt->get_result();
 
-
         if ($result && ($row = $result->fetch_assoc())) {
-
             $notificationCount = (int)$row["total"];
-
         }
 
-
         $stmt->close();
-
     }
-
 }
-
 ?>
 
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-
 <header class="topbar">
 
-
     <!-- GLOBAL SEARCH -->
-
     <form class="global-search"
           action="../Search/index.php"
           method="GET">
 
-
-        <i class="fa-solid fa-magnifying-glass">
-</i>
-
+        <i class="fa-solid fa-magnifying-glass"></i>
 
         <input
             type="text"
@@ -69,22 +49,15 @@ if (isset($_SESSION["user_id"])) {
             required
         >
 
-
-        <div id="live-search-results">
-</div>
-
+        <div id="live-search-results"></div>
 
     </form>
 
 
-
     <!-- TOP RIGHT ACTIONS -->
-
     <div class="topbar-actions">
 
-
         <!-- LIGHT / DARK MODE -->
-
         <button
             type="button"
             class="theme-toggle"
@@ -92,16 +65,11 @@ if (isset($_SESSION["user_id"])) {
             aria-label="Switch to dark mode"
             title="Switch to dark mode"
         >
-
-            <i class="fa-solid fa-moon" id="themeIcon">
-</i>
-
+            <i class="fa-solid fa-moon" id="themeIcon"></i>
         </button>
 
 
-
         <!-- NOTIFICATIONS -->
-
         <a
             class="notification-link"
             href="../Notifications/index.php"
@@ -109,38 +77,21 @@ if (isset($_SESSION["user_id"])) {
             title="Notifications"
         >
 
+            <i class="fa-regular fa-bell"></i>
 
-            <i class="fa-regular fa-bell">
-</i>
-
-
-            
-<?php if ($notificationCount > 0) {
- 
-?>
+            <?php if ($notificationCount > 0) { ?>
 
                 <span class="notification-count">
-
-                    
-<?php echo $notificationCount;
- 
-?>
+                    <?php echo $notificationCount; ?>
                 </span>
 
-
-            
-<?php }
- 
-?>
+            <?php } ?>
 
         </a>
 
 
-
         <!-- USER MENU -->
-
         <div class="user-menu">
-
 
             <button
                 class="user-menu-trigger"
@@ -148,11 +99,8 @@ if (isset($_SESSION["user_id"])) {
                 id="userMenuTrigger"
             >
 
-
                 <span class="mini-avatar">
-
-                    
-<?php
+                    <?php
                     echo strtoupper(
                         substr(
                             $_SESSION["fullname"] ?? "U",
@@ -160,31 +108,20 @@ if (isset($_SESSION["user_id"])) {
                             2
                         )
                     );
-
-                    
-?>
+                    ?>
                 </span>
 
-
                 <span class="top-user-name">
-
-                    
-<?php
+                    <?php
                     echo htmlspecialchars(
                         $_SESSION["fullname"] ?? "User"
                     );
-
-                    
-?>
+                    ?>
                 </span>
 
-
-                <i class="fa-solid fa-chevron-down">
-</i>
-
+                <i class="fa-solid fa-chevron-down"></i>
 
             </button>
-
 
 
             <div
@@ -192,47 +129,31 @@ if (isset($_SESSION["user_id"])) {
                 id="userDropdown"
             >
 
-
                 <div class="dropdown-email">
-
-                    
-<?php
+                    <?php
                     echo htmlspecialchars(
                         $_SESSION["email"] ?? ""
                     );
-
-                    
-?>
+                    ?>
                 </div>
 
-
                 <a href="../Profile/index.php">
-
-                    <i class="fa-regular fa-user">
-</i>
+                    <i class="fa-regular fa-user"></i>
                     My profile
                 </a>
 
-
                 <a href="../Auth/logout.php">
-
-                    <i class="fa-solid fa-arrow-right-from-bracket">
-</i>
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     Sign out
                 </a>
 
-
             </div>
-
 
         </div>
 
-
     </div>
 
-
 </header>
-
 
 
 <script>

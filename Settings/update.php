@@ -1,53 +1,9 @@
 <?php
-require_once("../config/auth.php");
-require_once("../config/DataBase.php");
-require_once("../config/permissions.php");
-require_once("../config/functions.php");
-
-requireRole("Admin");
-if($_SERVER['REQUEST_METHOD']!=='POST'){
-header('Location:index.php');
-exit();
-}
-
-$company_name=trim($_POST['company_name']??'');
-$currency=trim($_POST['currency']??'');
-$timezone=trim($_POST['timezone']??'');
-$email=trim($_POST['company_email']??'');
-$phone=trim($_POST['company_phone']??'');
-$address=trim($_POST['company_address']??'');
-$website=trim($_POST['company_website']??'');
-$theme=$_POST['theme']??'Light';
-if(!in_array($theme,['Light','Dark'],true))$theme='Light';
-
-$current=$conn->query('SELECT company_logo FROM settings LIMIT 1')->fetch_assoc();
-$logo=$current['company_logo']??'';
-
-if(isset($_FILES['company_logo'])&&$_FILES['company_logo']['error']===UPLOAD_ERR_OK){
-$ext=strtolower(pathinfo($_FILES['company_logo']['name'],PATHINFO_EXTENSION));
-if(in_array($ext,['png','jpg','jpeg','webp','gif'],true)){
-if(!is_dir(__DIR__.'/logo'))mkdir(__DIR__.'/logo',0755,true);
-$filename=time().'_'.preg_replace('/[^a-zA-Z0-9._-]/','_',basename($_FILES['company_logo']['name']));
-if(move_uploaded_file($_FILES['company_logo']['tmp_name'],__DIR__.'/logo/'.$filename))$logo=$filename;
-}
-}
-
+require_once("../config/auth.php");require_once("../config/DataBase.php");require_once("../config/permissions.php");require_once("../config/functions.php");
+requireRole("Admin");if($_SERVER['REQUEST_METHOD']!=='POST'){header('Location:index.php');exit();}
+$company_name=trim($_POST['company_name']??'');$currency=trim($_POST['currency']??'');$timezone=trim($_POST['timezone']??'');$email=trim($_POST['company_email']??'');$phone=trim($_POST['company_phone']??'');$address=trim($_POST['company_address']??'');$website=trim($_POST['company_website']??'');$theme=$_POST['theme']??'Light';if(!in_array($theme,['Light','Dark'],true))$theme='Light';
+$current=$conn->query('SELECT company_logo FROM settings LIMIT 1')->fetch_assoc();$logo=$current['company_logo']??'';
+if(isset($_FILES['company_logo'])&&$_FILES['company_logo']['error']===UPLOAD_ERR_OK){$ext=strtolower(pathinfo($_FILES['company_logo']['name'],PATHINFO_EXTENSION));if(in_array($ext,['png','jpg','jpeg','webp','gif'],true)){if(!is_dir(__DIR__.'/logo'))mkdir(__DIR__.'/logo',0755,true);$filename=time().'_'.preg_replace('/[^a-zA-Z0-9._-]/','_',basename($_FILES['company_logo']['name']));if(move_uploaded_file($_FILES['company_logo']['tmp_name'],__DIR__.'/logo/'.$filename))$logo=$filename;}}
 $check=$conn->query('SELECT id FROM settings LIMIT 1');
-
-if($check&&$check->num_rows){
-$stmt=$conn->prepare('UPDATE settings SET company_name=?,company_email=?,company_phone=?,company_address=?,company_website=?,timezone=?,currency=?,theme=?,company_logo=? WHERE id=1');
-$stmt->bind_param('sssssssss',$company_name,$email,$phone,$address,$website,$timezone,$currency,$theme,$logo);
-}
-else{
-$stmt=$conn->prepare('INSERT INTO settings(company_name,company_email,company_phone,company_address,company_website,timezone,currency,theme,company_logo) VALUES(?,?,?,?,?,?,?,?,?)');
-$stmt->bind_param('sssssssss',$company_name,$email,$phone,$address,$website,$timezone,$currency,$theme,$logo);
-}
-
-if($stmt->execute()){
-logActivity($conn,$_SESSION['user_id'],$_SESSION['fullname'],'Updated workspace settings');
-header('Location:index.php?success='.urlencode('Settings saved successfully.'));
-exit();
-}
-header('Location:index.php?success='.urlencode('Unable to save settings.'));
-exit();
-
+if($check&&$check->num_rows){$stmt=$conn->prepare('UPDATE settings SET company_name=?,company_email=?,company_phone=?,company_address=?,company_website=?,timezone=?,currency=?,theme=?,company_logo=? WHERE id=1');$stmt->bind_param('sssssssss',$company_name,$email,$phone,$address,$website,$timezone,$currency,$theme,$logo);}else{$stmt=$conn->prepare('INSERT INTO settings(company_name,company_email,company_phone,company_address,company_website,timezone,currency,theme,company_logo) VALUES(?,?,?,?,?,?,?,?,?)');$stmt->bind_param('sssssssss',$company_name,$email,$phone,$address,$website,$timezone,$currency,$theme,$logo);}
+if($stmt->execute()){logActivity($conn,$_SESSION['user_id'],$_SESSION['fullname'],'Updated workspace settings');header('Location:index.php?success='.urlencode('Settings saved successfully.'));exit();}header('Location:index.php?success='.urlencode('Unable to save settings.'));exit();

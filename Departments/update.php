@@ -1,35 +1,5 @@
 <?php
-require_once("../config/auth.php");
-require_once("../config/DataBase.php");
-require_once("../config/permissions.php");
-require_once("../config/functions.php");
-requireRole(["Admin","Manager"]);
-
-if($_SERVER['REQUEST_METHOD']!=='POST'){
-header('Location:index.php');
-exit();
-}
-$id=(int)($_POST['id']??0);
-$name=trim($_POST['department_name']??'');
-$code=strtoupper(trim($_POST['department_code']??''));
-$description=trim($_POST['description']??'');
-if($id<=0||$name===''||$code===''){
-header('Location:index.php');
-exit();
-}
-
-$stmt=$conn->prepare('SELECT id FROM departments WHERE (department_name=? OR department_code=?) AND id<>?');
-$stmt->bind_param('ssi',$name,$code,$id);
-$stmt->execute();
-if($stmt->get_result()->num_rows){
-header('Location:edit.php?id='.$id.'&msg='.urlencode('Department name or code already exists.'));
-exit();
-}
-
-$stmt=$conn->prepare('UPDATE departments SET department_name=?,department_code=?,description=? WHERE id=?');
-$stmt->bind_param('sssi',$name,$code,$description,$id);
-$stmt->execute();
-logActivity($conn,$_SESSION['user_id'],$_SESSION['fullname'],'Updated department: '.$name);
-header('Location:index.php');
-exit();
-
+require_once("../config/auth.php");require_once("../config/DataBase.php");require_once("../config/permissions.php");require_once("../config/functions.php");requireRole(["Admin","Manager"]);
+if($_SERVER['REQUEST_METHOD']!=='POST'){header('Location:index.php');exit();}$id=(int)($_POST['id']??0);$name=trim($_POST['department_name']??'');$code=strtoupper(trim($_POST['department_code']??''));$description=trim($_POST['description']??'');if($id<=0||$name===''||$code===''){header('Location:index.php');exit();}
+$stmt=$conn->prepare('SELECT id FROM departments WHERE (department_name=? OR department_code=?) AND id<>?');$stmt->bind_param('ssi',$name,$code,$id);$stmt->execute();if($stmt->get_result()->num_rows){header('Location:edit.php?id='.$id.'&msg='.urlencode('Department name or code already exists.'));exit();}
+$stmt=$conn->prepare('UPDATE departments SET department_name=?,department_code=?,description=? WHERE id=?');$stmt->bind_param('sssi',$name,$code,$description,$id);$stmt->execute();logActivity($conn,$_SESSION['user_id'],$_SESSION['fullname'],'Updated department: '.$name);header('Location:index.php');exit();

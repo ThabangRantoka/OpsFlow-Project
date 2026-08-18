@@ -10,33 +10,23 @@ Version: 2.0
 
 function requireRole($roles)
 {
-
     // User must be logged in
     if (!isset($_SESSION["user_id"])) {
 
-
         header("Location: ../Auth/login.php");
-
         exit();
 
-
     }
-
 
     // Allow a single role or multiple roles
     if (!is_array($roles)) {
-
         $roles = [$roles];
-
     }
-
 
     // Check permission
     if (!in_array($_SESSION["role"], $roles)) {
 
-
         http_response_code(403);
-
 
         die("
         <div style='
@@ -71,7 +61,5 @@ function requireRole($roles)
         </div>
         ");
 
-
     }
-
 }

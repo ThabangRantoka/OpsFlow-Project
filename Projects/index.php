@@ -8,14 +8,10 @@
  */
 
 require_once("../config/auth.php");
-
 require_once("../config/DataBase.php");
-
 require_once("../config/permissions.php");
 
-
 requireRole(["Admin", "Manager", "Employee"]);
-
 
 
 /*
@@ -42,19 +38,13 @@ $sql = "
     ORDER BY id DESC
 ";
 
-
 $result = $conn->query($sql);
 
-
 if ($result === false) {
-
     die("Projects query failed: " . htmlspecialchars($conn->error));
-
 }
 
-
 $projectCount = $result->num_rows;
-
 
 
 /*
@@ -65,157 +55,108 @@ $projectCount = $result->num_rows;
 
 function priorityClass($priority)
 {
-
     switch ($priority) {
-
         case 'Low':
             return 'priority-low';
-
 
         case 'Medium':
             return 'priority-medium';
 
-
         case 'High':
             return 'priority-high';
-
 
         case 'Critical':
             return 'priority-critical';
 
-
         default:
             return 'priority-medium';
-
     }
-
 }
-
 
 
 function projectStatusClass($status)
 {
-
     switch ($status) {
-
         case 'Planning':
             return 'status-planning';
-
 
         case 'In Progress':
             return 'status-progress';
 
-
         case 'Completed':
             return 'status-completed';
-
 
         case 'On Hold':
             return 'status-hold';
 
-
         default:
             return 'status-planning';
-
     }
-
 }
-
 
 
 function formatProjectDate($date)
 {
-
     if (empty($date)) {
-
         return '—';
-
     }
-
 
     $timestamp = strtotime($date);
 
-
     if ($timestamp === false) {
-
         return '—';
-
     }
 
-
     return date('d M Y', $timestamp);
-
 }
-
 
 
 function formatMoney($amount)
 {
-
     return 'R ' . number_format((float)$amount, 0, '.', ' ');
-
 }
-
 
 
 function progressValue($progress)
 {
-
     $progress = (int)$progress;
 
-
     if ($progress < 0) {
-
         return 0;
-
     }
-
 
     if ($progress > 100) {
-
         return 100;
-
     }
 
-
     return $progress;
-
 }
-
 
 ?>
 
 <!DOCTYPE html>
-
 <html lang="en">
-
 
 <head>
 
-
     <meta charset="UTF-8">
-
 
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
 
-
     <title>OpsFlow | Projects</title>
-
 
     <link
         rel="stylesheet"
         href="../Assets/CSS/style.css?v=2"
     >
 
-
     <link
         rel="stylesheet"
         href="../Assets/CSS/dashboard.css?v=2"
     >
-
 
     <!--
     |--------------------------------------------------------------------------
@@ -225,7 +166,6 @@ function progressValue($progress)
     | project cards.
     |--------------------------------------------------------------------------
     -->
-
 
     <style>
 
@@ -514,70 +454,43 @@ function progressValue($progress)
 
     </style>
 
-
 </head>
-
 
 
 <body>
 
-
 <div class="dashboard">
 
-
-    
-<?php include("../Includes/sidebar.php");
- 
-?>
+    <?php include("../Includes/sidebar.php"); ?>
 
 
     <main class="main-content">
 
-
-        
-<?php include("../Includes/header.php");
- 
-?>
+        <?php include("../Includes/header.php"); ?>
 
 
         <div class="projects-page">
 
-
             <section class="page-heading">
-
 
                 <div class="page-toolbar">
 
-
                     <div>
-
 
                         <h1>Projects</h1>
 
-
                         <p>
-
-                            
-<?php echo $projectCount;
- 
-?>
-                            
-<?php echo $projectCount === 1 ? 'project' : 'projects';
- 
-?>
+                            <?php echo $projectCount; ?>
+                            <?php echo $projectCount === 1 ? 'project' : 'projects'; ?>
                             in the delivery pipeline
                         </p>
-
 
                     </div>
 
 
-
                     <div class="actions">
 
-
-                        
-<?php
+                        <?php
                         if (
                             isset($_SESSION['role']) &&
                             in_array(
@@ -586,103 +499,69 @@ function progressValue($progress)
                                 true
                             )
                         ):
-                        
-?>
+                        ?>
 
                             <a
                                 href="add.php"
                                 class="btn btn-primary"
                             >
-
-                                <i class="fa-solid fa-plus">
-</i>
+                                <i class="fa-solid fa-plus"></i>
                                 New project
                             </a>
 
-
-                        
-<?php endif;
- 
-?>
+                        <?php endif; ?>
 
                     </div>
 
-
                 </div>
-
 
             </section>
 
 
-
             <section class="project-grid">
 
+                <?php if ($projectCount > 0): ?>
 
-                
-<?php if ($projectCount > 0): 
-?>
+                    <?php while ($p = $result->fetch_assoc()): ?>
 
-                    
-<?php while ($p = $result->fetch_assoc()): 
-?>
-
-                        
-<?php
+                        <?php
                         $progress = progressValue($p['progress']);
-
                         $priorityClass = priorityClass($p['priority']);
-
                         $statusClass = projectStatusClass($p['status']);
-
-                        
-?>
+                        ?>
 
                         <article class="project-card">
 
-
                             <div class="project-top">
-
 
                                 <div>
 
-
                                     <h2 class="project-title">
-
-                                        
-<?php
+                                        <?php
                                         echo htmlspecialchars(
                                             $p['project_name'],
                                             ENT_QUOTES,
                                             'UTF-8'
                                         );
-
-                                        
-?>
+                                        ?>
                                     </h2>
-
 
                                     <div class="project-code">
 
-
-                                        
-<?php
+                                        <?php
                                         echo htmlspecialchars(
                                             $p['project_code'],
                                             ENT_QUOTES,
                                             'UTF-8'
                                         );
-
-                                        
-?>
+                                        ?>
 
                                         ·
 
-                                        
-<?php
+                                        <?php
                                         $manager = trim(
                                             (string)$p['project_manager']
                                         );
-
 
                                         echo htmlspecialchars(
                                             $manager !== ''
@@ -691,171 +570,108 @@ function progressValue($progress)
                                             ENT_QUOTES,
                                             'UTF-8'
                                         );
-
-                                        
-?>
+                                        ?>
 
                                     </div>
-
 
                                 </div>
 
 
-
                                 <div class="project-badges">
 
-
-                                    <span class="pill 
-<?php echo $priorityClass;
- 
-?>">
-
-                                        
-<?php
+                                    <span class="pill <?php echo $priorityClass; ?>">
+                                        <?php
                                         echo htmlspecialchars(
                                             $p['priority'],
                                             ENT_QUOTES,
                                             'UTF-8'
                                         );
-
-                                        
-?>
+                                        ?>
                                     </span>
 
 
-
-                                    <span class="pill 
-<?php echo $statusClass;
- 
-?>">
-
-                                        
-<?php
+                                    <span class="pill <?php echo $statusClass; ?>">
+                                        <?php
                                         echo htmlspecialchars(
                                             $p['status'],
                                             ENT_QUOTES,
                                             'UTF-8'
                                         );
-
-                                        
-?>
+                                        ?>
                                     </span>
-
 
                                 </div>
 
-
                             </div>
-
 
 
                             <div class="project-progress-label">
 
-
                                 <span>Progress</span>
 
-
                                 <span>
-
-                                    
-<?php echo $progress;
- 
-?>%
+                                    <?php echo $progress; ?>%
                                 </span>
 
-
                             </div>
-
 
 
                             <div class="progress-track">
 
-
                                 <div
                                     class="progress-fill"
-                                    style="width: 
-<?php echo $progress;
- 
-?>%;"
-                                >
-</div>
-
+                                    style="width: <?php echo $progress; ?>%;"
+                                ></div>
 
                             </div>
 
 
-
                             <div class="project-footer">
-
 
                                 <div>
 
-
                                     <div class="project-dates">
 
-
-                                        
-<?php
+                                        <?php
                                         echo formatProjectDate(
                                             $p['start_date']
                                         );
-
-                                        
-?>
+                                        ?>
 
                                         →
 
-                                        
-<?php
+                                        <?php
                                         echo formatProjectDate(
                                             $p['end_date']
                                         );
-
-                                        
-?>
+                                        ?>
 
                                     </div>
-
 
 
                                     <div class="project-budget">
 
-
-                                        
-<?php
+                                        <?php
                                         echo formatMoney($p['budget']);
-
-                                        
-?>
+                                        ?>
 
                                     </div>
-
 
                                 </div>
 
 
-
                                 <div class="project-actions">
 
-
                                     <a
-                                        href="view.php?id=
-<?php echo (int)$p['id'];
- 
-?>"
+                                        href="view.php?id=<?php echo (int)$p['id']; ?>"
                                         class="view"
                                         title="View project"
                                     >
-
-                                        <i class="fa-regular fa-eye">
-</i>
-
+                                        <i class="fa-regular fa-eye"></i>
                                     </a>
 
 
-
-                                    
-<?php
+                                    <?php
                                     if (
                                         isset($_SESSION['role']) &&
                                         in_array(
@@ -864,80 +680,48 @@ function progressValue($progress)
                                             true
                                         )
                                     ):
-                                    
-?>
+                                    ?>
 
                                         <a
-                                            href="edit.php?id=
-<?php echo (int)$p['id'];
- 
-?>"
+                                            href="edit.php?id=<?php echo (int)$p['id']; ?>"
                                             class="edit"
                                             title="Edit project"
                                         >
-
-                                            <i class="fa-solid fa-pen">
-</i>
-
+                                            <i class="fa-solid fa-pen"></i>
                                         </a>
 
-
-                                    
-<?php endif;
- 
-?>
+                                    <?php endif; ?>
 
 
-                                    
-<?php
+                                    <?php
                                     if (
                                         isset($_SESSION['role']) &&
                                         $_SESSION['role'] === 'Admin'
                                     ):
-                                    
-?>
+                                    ?>
 
                                         <a
-                                            href="delete.php?id=
-<?php echo (int)$p['id'];
- 
-?>"
+                                            href="delete.php?id=<?php echo (int)$p['id']; ?>"
                                             class="delete"
                                             title="Delete project"
                                             onclick="return confirm('Delete this project?');"
                                         >
-
-                                            <i class="fa-regular fa-trash-can">
-</i>
-
+                                            <i class="fa-regular fa-trash-can"></i>
                                         </a>
 
-
-                                    
-<?php endif;
- 
-?>
+                                    <?php endif; ?>
 
                                 </div>
 
-
                             </div>
-
 
                         </article>
 
+                    <?php endwhile; ?>
 
-                    
-<?php endwhile;
- 
-?>
-
-                
-<?php else: 
-?>
+                <?php else: ?>
 
                     <div class="empty-projects">
-
 
                         <strong>No projects found</strong>
 
@@ -945,24 +729,15 @@ function progressValue($progress)
 
                     </div>
 
-
-                
-<?php endif;
- 
-?>
+                <?php endif; ?>
 
             </section>
 
-
         </div>
-
 
     </main>
 
-
 </div>
 
-
 </body>
-
 </html>

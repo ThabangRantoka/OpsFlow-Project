@@ -1,9 +1,7 @@
 <?php
 
 require_once("DataBase.php");
-
 require_once("notifications.php");
-
 
 $result = createNotification(
     $conn,
@@ -13,14 +11,8 @@ $result = createNotification(
     "🔔"
 );
 
-
 if($result){
-
     echo "Notification inserted successfully!";
-
-}
-else{
-
+}else{
     echo "Insert failed!";
-
 }

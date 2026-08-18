@@ -1,14 +1,10 @@
 <?php
 
 require_once("../config/auth.php");
-
 require_once("../config/DataBase.php");
-
 require_once("../config/permissions.php");
 
-
 requireRole(["Admin"]);
-
 
 /*
 |--------------------------------------------------------------------------
@@ -18,16 +14,11 @@ requireRole(["Admin"]);
 
 $settings = [];
 
-
 $result = $conn->query("SELECT * FROM settings LIMIT 1");
 
-
 if ($result && $result->num_rows > 0) {
-
     $settings = $result->fetch_assoc();
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -36,23 +27,14 @@ if ($result && $result->num_rows > 0) {
 */
 
 $company_name = $settings["company_name"] ?? "OpsFlow Enterprise";
-
 $currency_code = $settings["currency_code"] ?? "LSL";
-
 $timezone = $settings["timezone"] ?? "Africa/Maseru";
-
 $company_email = $settings["company_email"] ?? "admin@opsflow.com";
-
 $company_phone = $settings["company_phone"] ?? "+266 50000000";
-
 $company_address = $settings["company_address"] ?? "Maseru, Lesotho";
-
 $website = $settings["website"] ?? "www.opsflow.com";
-
 $theme = $settings["theme"] ?? "Light";
-
 $company_logo = $settings["company_logo"] ?? "";
-
 
 /*
 |--------------------------------------------------------------------------
@@ -62,56 +44,43 @@ $company_logo = $settings["company_logo"] ?? "";
 
 $logoPath = "../Assets/Images/" . $company_logo;
 
-
 if (
     empty($company_logo) ||
     !file_exists(__DIR__ . "/../Assets/Images/" . $company_logo)
 ) {
-
     $logoPath = "../Assets/Images/opsflow-logo-light.png";
-
 }
-
 
 ?>
 
 <!DOCTYPE html>
-
 <html lang="en">
-
 
 <head>
 
-
     <meta charset="UTF-8">
-
 
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
 
-
     <title>OpsFlow | Settings</title>
-
 
     <link
         rel="stylesheet"
         href="../Assets/CSS/style.css"
     >
 
-
     <link
         rel="stylesheet"
         href="../Assets/CSS/dashboard.css"
     >
 
-
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
-
 
     <style>
 
@@ -330,99 +299,57 @@ if (
 
     </style>
 
-
 </head>
-
 
 <body>
 
-
 <div class="dashboard">
 
-
-    
-<?php include("../Includes/sidebar.php");
- 
-?>
+    <?php include("../Includes/sidebar.php"); ?>
 
     <main class="main-content">
 
-
-        
-<?php include("../Includes/header.php");
- 
-?>
+        <?php include("../Includes/header.php"); ?>
 
         <section class="page-heading">
 
-
             <div class="page-toolbar">
-
 
                 <div>
 
-
                     <h1>Settings</h1>
-
 
                     <p>
                         Workspace-wide configuration
                     </p>
 
-
                 </div>
 
-
             </div>
-
 
         </section>
 
 
-
         <div class="settings-card">
 
-
-            
-<?php if (isset($_GET["success"])) {
- 
-?>
+            <?php if (isset($_GET["success"])) { ?>
 
                 <div class="success-message">
-
-                    <i class="fa-solid fa-circle-check">
-</i>
+                    <i class="fa-solid fa-circle-check"></i>
                     Settings saved successfully.
                 </div>
 
-
-            
-<?php }
- 
-?>
+            <?php } ?>
 
 
-            
-<?php if (isset($_GET["error"])) {
- 
-?>
+            <?php if (isset($_GET["error"])) { ?>
 
                 <div class="error-message">
-
-                    <i class="fa-solid fa-circle-exclamation">
-</i>
-
-                    
-<?php echo htmlspecialchars($_GET["error"]);
- 
-?>
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <?php echo htmlspecialchars($_GET["error"]); ?>
                 </div>
 
-
-            
-<?php }
- 
-?>
+            <?php } ?>
 
 
             <form
@@ -431,314 +358,221 @@ if (
                 enctype="multipart/form-data"
             >
 
-
                 <!-- COMPANY INFORMATION -->
-
 
                 <div class="settings-section">
 
-
                     <h2>Company information</h2>
-
 
                     <p>
                         Configure the basic information used throughout OpsFlow.
                     </p>
 
-
                     <div class="settings-grid">
 
-
                         <div class="form-group">
-
 
                             <label for="company_name">
                                 Company name
                             </label>
 
-
                             <input
                                 type="text"
                                 id="company_name"
                                 name="company_name"
-                                value="
-<?php echo htmlspecialchars($company_name);
- 
-?>"
+                                value="<?php echo htmlspecialchars($company_name); ?>"
                                 required
                             >
-
 
                         </div>
 
 
-
                         <div class="form-group">
-
 
                             <label for="currency_code">
                                 Currency code
                             </label>
 
-
                             <input
                                 type="text"
                                 id="currency_code"
                                 name="currency_code"
-                                value="
-<?php echo htmlspecialchars($currency_code);
- 
-?>"
+                                value="<?php echo htmlspecialchars($currency_code); ?>"
                                 maxlength="10"
                                 required
                             >
 
-
                         </div>
 
 
-
                         <div class="form-group">
-
 
                             <label for="timezone">
                                 Timezone
                             </label>
 
-
                             <input
                                 type="text"
                                 id="timezone"
                                 name="timezone"
-                                value="
-<?php echo htmlspecialchars($timezone);
- 
-?>"
+                                value="<?php echo htmlspecialchars($timezone); ?>"
                                 required
                             >
-
 
                         </div>
 
 
-
                         <div class="form-group">
-
 
                             <label for="company_email">
                                 Company email
                             </label>
 
-
                             <input
                                 type="email"
                                 id="company_email"
                                 name="company_email"
-                                value="
-<?php echo htmlspecialchars($company_email);
- 
-?>"
+                                value="<?php echo htmlspecialchars($company_email); ?>"
                                 required
                             >
-
 
                         </div>
 
 
-
                         <div class="form-group">
-
 
                             <label for="company_phone">
                                 Company phone
                             </label>
 
-
                             <input
                                 type="text"
                                 id="company_phone"
                                 name="company_phone"
-                                value="
-<?php echo htmlspecialchars($company_phone);
- 
-?>"
+                                value="<?php echo htmlspecialchars($company_phone); ?>"
                             >
-
 
                         </div>
 
 
-
                         <div class="form-group">
-
 
                             <label for="website">
                                 Website
                             </label>
 
-
                             <input
                                 type="text"
                                 id="website"
                                 name="website"
-                                value="
-<?php echo htmlspecialchars($website);
- 
-?>"
+                                value="<?php echo htmlspecialchars($website); ?>"
                             >
-
 
                         </div>
 
 
-
                         <div class="form-group full">
-
 
                             <label for="company_address">
                                 Company address
                             </label>
 
-
                             <textarea
                                 id="company_address"
                                 name="company_address"
-                            >
-<?php echo htmlspecialchars($company_address);
- 
-?></textarea>
-
+                            ><?php echo htmlspecialchars($company_address); ?></textarea>
 
                         </div>
 
-
                     </div>
 
-
                 </div>
-
 
 
                 <hr class="settings-divider">
 
 
-
                 <!-- APPEARANCE -->
-
 
                 <div class="settings-section">
 
-
                     <h2>Appearance</h2>
-
 
                     <p>
                         Configure the appearance of your OpsFlow workspace.
                     </p>
 
-
                     <div class="settings-grid">
 
-
                         <div class="form-group">
-
 
                             <label for="theme">
                                 Theme
                             </label>
-
 
                             <select
                                 id="theme"
                                 name="theme"
                             >
 
-
                                 <option
                                     value="Light"
-                                    
-<?php echo $theme === "Light" ? "selected" : "";
- 
-?>
+                                    <?php echo $theme === "Light" ? "selected" : ""; ?>
                                 >
                                     Light
                                 </option>
 
-
                                 <option
                                     value="Dark"
-                                    
-<?php echo $theme === "Dark" ? "selected" : "";
- 
-?>
+                                    <?php echo $theme === "Dark" ? "selected" : ""; ?>
                                 >
                                     Dark
                                 </option>
 
-
                             </select>
-
 
                         </div>
 
-
                     </div>
 
-
                 </div>
-
 
 
                 <hr class="settings-divider">
 
 
-
                     <!-- COMPANY LOGO -->
-
 
                     <div class="settings-section">
 
-
                         <h2>Company logo</h2>
-
 
                         <p>
                             Upload the logo that should be used throughout the workspace.
                         </p>
 
-
                         <div class="logo-upload-box">
-
 
                             <div class="logo-preview">
 
-
                                 <img
                                     id="logoPreview"
-                                    src="
-<?php echo htmlspecialchars($logoPath);
- 
-?>"
+                                    src="<?php echo htmlspecialchars($logoPath); ?>"
                                     alt="OpsFlow Company Logo"
                                 >
 
-
                             </div>
 
-
                             <div class="logo-upload-content">
-
 
                                 <h3>
                                     Upload company logo
                                 </h3>
 
-
                                 <p>
                                     PNG, JPG or WEBP. Recommended size:
                                     512 × 512px.
                                 </p>
-
 
                                 <input
                                     type="file"
@@ -747,24 +581,17 @@ if (
                                     accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
                                 >
 
-
                             </div>
-
 
                         </div>
 
-
                     </div>
-
 
         </div>
 
-
     </main>
 
-
 </div>
-
 
 <script>
 
@@ -812,8 +639,6 @@ if (logoInput && logoPreview) {
 
 </script>
 
-
 </body>
-
 
 </html>

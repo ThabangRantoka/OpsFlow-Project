@@ -9,16 +9,11 @@
  */
 
 require_once("../config/auth.php");
-
 require_once("../config/DataBase.php");
-
 require_once("../config/functions.php");
-
 require_once("../config/permissions.php");
 
-
 requireRole(["Admin", "Manager"]);
-
 
 
 /*
@@ -29,14 +24,10 @@ requireRole(["Admin", "Manager"]);
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
-
     header("Location: index.php");
-
     exit();
 
-
 }
-
 
 
 /*
@@ -47,35 +38,25 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
 $project_code = trim($_POST["project_code"] ?? '');
 
-
 $project_name = trim($_POST["project_name"] ?? '');
-
 
 $department = trim($_POST["department"] ?? '');
 
-
 $project_manager = trim($_POST["project_manager"] ?? '');
-
 
 $start_date = trim($_POST["start_date"] ?? '');
 
-
 $end_date = trim($_POST["end_date"] ?? '');
 
-
 $budget = $_POST["budget"] ?? '';
-
 
 $progress = isset($_POST["progress"])
     ? (int)$_POST["progress"]
     : 0;
 
-
 $priority = trim($_POST["priority"] ?? 'Medium');
 
-
 $status = trim($_POST["status"] ?? 'Planning');
-
 
 
 /*
@@ -85,18 +66,12 @@ $status = trim($_POST["status"] ?? 'Planning');
 */
 
 if ($start_date === '') {
-
     $start_date = null;
-
 }
-
 
 if ($end_date === '') {
-
     $end_date = null;
-
 }
-
 
 
 /*
@@ -112,7 +87,6 @@ $allowedPriorities = [
     'Critical'
 ];
 
-
 $allowedStatuses = [
     'Planning',
     'In Progress',
@@ -121,113 +95,87 @@ $allowedStatuses = [
 ];
 
 
-
 if ($project_code === '') {
-
 
     redirectWithError(
         "Project code is required.",
         $_POST
     );
 
-
 }
 
 
-
 if ($project_name === '') {
-
 
     redirectWithError(
         "Project name is required.",
         $_POST
     );
 
-
 }
 
 
-
 if ($department === '') {
-
 
     redirectWithError(
         "Please select a department.",
         $_POST
     );
 
-
 }
 
 
-
 if ($budget === '' || !is_numeric($budget)) {
-
 
     redirectWithError(
         "Please enter a valid project budget.",
         $_POST
     );
 
-
 }
-
 
 
 $budget = (float)$budget;
 
 
-
 if ($budget < 0) {
-
 
     redirectWithError(
         "Project budget cannot be negative.",
         $_POST
     );
 
-
 }
 
 
-
 if ($progress < 0 || $progress > 100) {
-
 
     redirectWithError(
         "Progress must be between 0 and 100.",
         $_POST
     );
 
-
 }
 
 
-
 if (!in_array($priority, $allowedPriorities, true)) {
-
 
     redirectWithError(
         "Invalid project priority.",
         $_POST
     );
 
-
 }
 
 
-
 if (!in_array($status, $allowedStatuses, true)) {
-
 
     redirectWithError(
         "Invalid project status.",
         $_POST
     );
 
-
 }
-
 
 
 /*
@@ -238,65 +186,48 @@ if (!in_array($status, $allowedStatuses, true)) {
 
 if ($start_date !== null) {
 
-
     $startTimestamp = strtotime($start_date);
 
-
     if ($startTimestamp === false) {
-
 
         redirectWithError(
             "Invalid start date.",
             $_POST
         );
 
-
     }
-
 
 }
 
 
-
 if ($end_date !== null) {
-
 
     $endTimestamp = strtotime($end_date);
 
-
     if ($endTimestamp === false) {
-
 
         redirectWithError(
             "Invalid end date.",
             $_POST
         );
 
-
     }
-
 
 }
 
 
-
 if ($start_date !== null && $end_date !== null) {
 
-
     if ($end_date < $start_date) {
-
 
         redirectWithError(
             "End date cannot be before the start date.",
             $_POST
         );
 
-
     }
 
-
 }
-
 
 
 /*
@@ -310,18 +241,14 @@ $check = $conn->prepare(
 );
 
 
-
 if (!$check) {
-
 
     die(
         "Could not prepare duplicate check: " .
         htmlspecialchars($conn->error)
     );
 
-
 }
-
 
 
 $check->bind_param(
@@ -330,39 +257,30 @@ $check->bind_param(
 );
 
 
-
 if (!$check->execute()) {
-
 
     die(
         "Could not check project code: " .
         htmlspecialchars($check->error)
     );
 
-
 }
-
 
 
 $checkResult = $check->get_result();
 
 
-
 if ($checkResult && $checkResult->num_rows > 0) {
-
 
     redirectWithError(
         "Project code already exists.",
         $_POST
     );
 
-
 }
 
 
-
 $check->close();
-
 
 
 /*
@@ -390,22 +308,17 @@ $sql = "
 ";
 
 
-
 $stmt = $conn->prepare($sql);
 
 
-
 if (!$stmt) {
-
 
     die(
         "Could not prepare project insert: " .
         htmlspecialchars($conn->error)
     );
 
-
 }
-
 
 
 /*
@@ -436,7 +349,6 @@ $stmt->bind_param(
 );
 
 
-
 /*
 |--------------------------------------------------------------------------
 | Execute
@@ -445,12 +357,9 @@ $stmt->bind_param(
 
 if (!$stmt->execute()) {
 
-
     $error = $stmt->error;
 
-
     $stmt->close();
-
 
     die(
         "Project could not be saved.<br><br>" .
@@ -458,9 +367,7 @@ if (!$stmt->execute()) {
         htmlspecialchars($error)
     );
 
-
 }
-
 
 
 /*
@@ -471,9 +378,7 @@ if (!$stmt->execute()) {
 
 $newProjectId = $stmt->insert_id;
 
-
 $stmt->close();
-
 
 
 /*
@@ -484,14 +389,11 @@ $stmt->close();
 
 if (function_exists('logActivity')) {
 
-
     $userId = isset($_SESSION["user_id"])
         ? (int)$_SESSION["user_id"]
         : 0;
 
-
     $fullname = $_SESSION["fullname"] ?? 'System';
-
 
     logActivity(
         $conn,
@@ -500,9 +402,7 @@ if (function_exists('logActivity')) {
         "Created project: " . $project_name
     );
 
-
 }
-
 
 
 /*
@@ -516,9 +416,7 @@ header(
     urlencode("Project created successfully.")
 );
 
-
 exit();
-
 
 
 /*
@@ -529,12 +427,10 @@ exit();
 
 function redirectWithError($message, $data = [])
 {
-
     $query = [
         'msg' => $message,
         'type' => 'error'
     ];
-
 
 
     /*
@@ -555,21 +451,15 @@ function redirectWithError($message, $data = [])
     ];
 
 
-
     foreach ($fields as $field) {
-
 
         if (isset($data[$field])) {
 
-
             $query[$field] = $data[$field];
-
 
         }
 
-
     }
-
 
 
     header(
@@ -577,7 +467,5 @@ function redirectWithError($message, $data = [])
         http_build_query($query)
     );
 
-
     exit();
-
 }

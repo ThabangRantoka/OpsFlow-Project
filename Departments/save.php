@@ -10,35 +10,23 @@
  */
 
 require_once("../config/auth.php");
-
 require_once("../config/DataBase.php");
-
 require_once("../config/functions.php");
-
 
 require_once("../config/permissions.php");
 
-
 requireRole(["Admin","Manager"]);
-
 
 // Only allow POST requests
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
-
     header("Location: add.php");
-
     exit();
-
 }
-
 
 // Get form data
 $department_name = trim($_POST["department_name"]);
-
 $department_code = strtoupper(trim($_POST["department_code"]));
-
 $description = trim($_POST["description"]);
-
 
 // Check duplicates
 $check = $conn->prepare("
@@ -48,33 +36,25 @@ WHERE department_name = ?
 OR department_code = ?
 ");
 
-
 $check->bind_param(
     "ss",
     $department_name,
     $department_code
 );
 
-
 $check->execute();
-
 
 $result = $check->get_result();
 
-
 if ($result->num_rows > 0) {
-
 
     echo "<script>
         alert('Department already exists!');
         window.location='add.php';
     </script>";
 
-
     exit();
-
 }
-
 
 // Save department
 $sql = "
@@ -92,9 +72,7 @@ VALUES
 )
 ";
 
-
 $stmt = $conn->prepare($sql);
-
 
 $stmt->bind_param(
     "sss",
@@ -103,9 +81,7 @@ $stmt->bind_param(
     $description
 );
 
-
 if ($stmt->execute()) {
-
 
     logActivity(
         $conn,
@@ -114,25 +90,16 @@ if ($stmt->execute()) {
         "Added department: " . $department_name
     );
 
-
     header("Location: index.php");
-
     exit();
 
-
-}
- else {
-
+} else {
 
     die("Database Error: " . $conn->error);
 
-
 }
 
-
 $stmt->close();
-
 $conn->close();
-
 
 ?>

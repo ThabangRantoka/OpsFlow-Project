@@ -1,14 +1,10 @@
 <?php
 
 require_once("../config/auth.php");
-
 require_once("../config/DataBase.php");
-
 require_once("../config/permissions.php");
 
-
 requireRole(["Admin", "Manager", "Employee"]);
-
 
 /*
 |--------------------------------------------------------------------------
@@ -18,15 +14,10 @@ requireRole(["Admin", "Manager", "Employee"]);
 
 $userId = (int)($_SESSION["user_id"] ?? 0);
 
-
 if ($userId <= 0) {
-
     header("Location: ../Login/index.php");
-
     exit();
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -40,12 +31,9 @@ if ($userId <= 0) {
 
 if (isset($_GET["read"])) {
 
-
     $notificationId = (int)$_GET["read"];
 
-
     if ($notificationId > 0) {
-
 
         $stmt = $conn->prepare("
             UPDATE notifications
@@ -54,26 +42,16 @@ if (isset($_GET["read"])) {
             AND user_id = ?
         ");
 
-
         if ($stmt) {
-
             $stmt->bind_param("ii", $notificationId, $userId);
-
             $stmt->execute();
-
             $stmt->close();
-
         }
-
     }
 
-
     header("Location: index.php");
-
     exit();
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -83,31 +61,21 @@ if (isset($_GET["read"])) {
 
 if (isset($_GET["read_all"])) {
 
-
     $stmt = $conn->prepare("
         UPDATE notifications
         SET is_read = 1
         WHERE user_id = ?
     ");
 
-
     if ($stmt) {
-
         $stmt->bind_param("i", $userId);
-
         $stmt->execute();
-
         $stmt->close();
-
     }
 
-
     header("Location: index.php");
-
     exit();
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -116,7 +84,6 @@ if (isset($_GET["read_all"])) {
 */
 
 $notifications = [];
-
 
 $stmt = $conn->prepare("
     SELECT
@@ -131,29 +98,19 @@ $stmt = $conn->prepare("
     ORDER BY created_at DESC, id DESC
 ");
 
-
 if ($stmt) {
 
-
     $stmt->bind_param("i", $userId);
-
     $stmt->execute();
-
 
     $result = $stmt->get_result();
 
-
     while ($row = $result->fetch_assoc()) {
-
         $notifications[] = $row;
-
     }
 
-
     $stmt->close();
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -163,7 +120,6 @@ if ($stmt) {
 
 $unreadCount = 0;
 
-
 $stmt = $conn->prepare("
     SELECT COUNT(*) AS total
     FROM notifications
@@ -171,25 +127,17 @@ $stmt = $conn->prepare("
     AND is_read = 0
 ");
 
-
 if ($stmt) {
 
-
     $stmt->bind_param("i", $userId);
-
     $stmt->execute();
-
 
     $countResult = $stmt->get_result()->fetch_assoc();
 
-
     $unreadCount = (int)($countResult["total"] ?? 0);
 
-
     $stmt->close();
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -199,16 +147,11 @@ if ($stmt) {
 
 function notificationIcon($icon)
 {
-
     $icon = trim((string)$icon);
 
-
     if ($icon === "") {
-
         return "fa-bell";
-
     }
-
 
     /*
      * Allow Font Awesome icon names.
@@ -220,66 +163,43 @@ function notificationIcon($icon)
      */
 
     if (strpos($icon, "fa-") === 0) {
-
         return $icon;
-
     }
 
-
     return "fa-bell";
-
 }
-
 
 function notificationTime($date)
 {
-
     if (!$date) {
-
         return "—";
-
     }
-
 
     $timestamp = strtotime($date);
 
-
     if (!$timestamp) {
-
         return htmlspecialchars($date);
-
     }
 
-
     return date("d M Y, H:i", $timestamp);
-
 }
-
 
 ?>
 
 <!DOCTYPE html>
 
-
 <html lang="en">
-
 
 <head>
 
-
 <meta charset="UTF-8">
-
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
 <title>OpsFlow | Notifications</title>
 
-
 <link rel="stylesheet" href="../Assets/CSS/style.css">
-
 <link rel="stylesheet" href="../Assets/CSS/dashboard.css">
-
 
 <style>
 
@@ -550,339 +470,204 @@ function notificationTime($date)
 
 </style>
 
-
 </head>
-
 
 <body>
 
-
 <div class="dashboard">
 
-
-<?php include("../Includes/sidebar.php");
- 
-?>
+<?php include("../Includes/sidebar.php"); ?>
 
 <main class="main-content">
 
-
-<?php include("../Includes/header.php");
- 
-?>
+<?php include("../Includes/header.php"); ?>
 
 <section class="page-heading">
 
-
 <div class="page-toolbar">
-
 
 <div>
 
-
 <h1>Notifications</h1>
 
-
 <p>
-You have 
-<?php echo count($notifications);
- 
-?> notification
-<?php echo count($notifications) === 1 ? '' : 's';
- 
-?>
-<?php if ($unreadCount > 0) {
- 
-?>
- · 
-<?php echo $unreadCount;
- 
-?> unread
-<?php }
- 
-?>
+You have <?php echo count($notifications); ?> notification<?php echo count($notifications) === 1 ? '' : 's'; ?>
+<?php if ($unreadCount > 0) { ?>
+ · <?php echo $unreadCount; ?> unread
+<?php } ?>
 </p>
-
 
 </div>
 
-
-<?php if ($unreadCount > 0) {
- 
-?>
+<?php if ($unreadCount > 0) { ?>
 
 <a
 href="index.php?read_all=1"
 class="btn btn-light"
 >
-
-<i class="fa-solid fa-check-double">
-</i>
+<i class="fa-solid fa-check-double"></i>
 Mark all as read
 </a>
 
-
-<?php }
- 
-?>
+<?php } ?>
 
 </div>
 
-
 </section>
-
 
 <div class="content-card">
 
-
-<?php if (count($notifications) > 0) {
- 
-?>
+<?php if (count($notifications) > 0) { ?>
 
 <table class="notifications-table">
 
-
 <thead>
-
 
 <tr>
 
-
 <th style="width:80px;">Icon</th>
-
 
 <th>Title</th>
 
-
 <th>Message</th>
-
 
 <th>Date</th>
 
-
 <th>Status</th>
 
-
-<th>
-</th>
-
+<th></th>
 
 </tr>
 
-
 </thead>
-
 
 <tbody>
 
-
-<?php foreach ($notifications as $notification) {
- 
-?>
+<?php foreach ($notifications as $notification) { ?>
 
 <?php
 
 $isUnread = (int)$notification["is_read"] === 0;
 
-
 $icon = notificationIcon($notification["icon"]);
-
 
 ?>
 
-<tr class="notification-row 
-<?php echo $isUnread ? 'unread' : '';
- 
-?>">
-
+<tr class="notification-row <?php echo $isUnread ? 'unread' : ''; ?>">
 
 <td>
-
 
 <div class="notification-icon">
 
-
-<i class="fa-solid 
-<?php echo htmlspecialchars($icon);
- 
-?>">
-</i>
-
+<i class="fa-solid <?php echo htmlspecialchars($icon); ?>"></i>
 
 </div>
 
-
 </td>
 
-
 <td>
-
 
 <span class="notification-title">
 
-
-<?php echo htmlspecialchars($notification["title"]);
- 
-?>
+<?php echo htmlspecialchars($notification["title"]); ?>
 
 </span>
 
-
 </td>
 
-
 <td>
-
 
 <div class="notification-message">
 
-
-<?php echo nl2br(htmlspecialchars($notification["message"]));
- 
-?>
+<?php echo nl2br(htmlspecialchars($notification["message"])); ?>
 
 </div>
 
-
 </td>
 
-
 <td>
-
 
 <span class="notification-date">
 
-
-<?php echo notificationTime($notification["created_at"]);
- 
-?>
+<?php echo notificationTime($notification["created_at"]); ?>
 
 </span>
 
-
 </td>
-
 
 <td>
 
-
-<?php if ($isUnread) {
- 
-?>
+<?php if ($isUnread) { ?>
 
 <span class="notification-status unread">
 
-
-<i class="fa-solid fa-circle">
-</i>
+<i class="fa-solid fa-circle"></i>
 Unread
 
 </span>
 
-
-<?php }
- else {
- 
-?>
+<?php } else { ?>
 
 <span class="notification-status read">
 
-
-<i class="fa-solid fa-check">
-</i>
+<i class="fa-solid fa-check"></i>
 Read
 
 </span>
 
-
-<?php }
- 
-?>
+<?php } ?>
 
 </td>
 
-
 <td>
 
-
-<?php if ($isUnread) {
- 
-?>
+<?php if ($isUnread) { ?>
 
 <a
-href="index.php?read=
-<?php echo (int)$notification["id"];
- 
-?>"
+href="index.php?read=<?php echo (int)$notification["id"]; ?>"
 class="notification-action"
 >
 Mark read
 </a>
 
-
-<?php }
- 
-?>
+<?php } ?>
 
 </td>
 
-
 </tr>
 
-
-<?php }
- 
-?>
+<?php } ?>
 
 </tbody>
 
-
 </table>
 
-
-<?php }
- else {
- 
-?>
+<?php } else { ?>
 
 <div class="empty-notifications">
 
-
 <div class="empty-notifications-icon">
 
-
-<i class="fa-regular fa-bell">
-</i>
-
+<i class="fa-regular fa-bell"></i>
 
 </div>
 
-
 <h3>No notifications yet</h3>
-
 
 <p>
 You're all caught up. New system notifications will appear here.
 </p>
 
-
 </div>
 
-
-<?php }
- 
-?>
+<?php } ?>
 
 </div>
-
 
 </main>
 
-
 </div>
 
-
 </body>
-
 
 </html>

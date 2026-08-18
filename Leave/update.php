@@ -1,29 +1,4 @@
 <?php
-require_once("../config/auth.php");
-require_once("../config/DataBase.php");
-require_once("../config/permissions.php");
-require_once("../config/functions.php");
-requireRole(["Admin","Manager"]);
-
-if($_SERVER['REQUEST_METHOD']!=='POST'){
-header('Location:index.php');
-exit();
-}
-$id=(int)($_POST['id']??0);
-$type=$_POST['leave_type']??'';
-$start=$_POST['start_date']??'';
-$end=$_POST['end_date']??'';
-$reason=trim($_POST['reason']??'');
-$allowed=['Annual','Sick','Maternity','Paternity','Study','Unpaid','Other'];
-if($id<=0||!in_array($type,$allowed,true)||$start===''||$end===''||$start>$end){
-header('Location:index.php');
-exit();
-}
-
-$stmt=$conn->prepare('UPDATE leave_requests SET leave_type=?,start_date=?,end_date=?,reason=? WHERE id=?');
-$stmt->bind_param('ssssi',$type,$start,$end,$reason,$id);
-$stmt->execute();
-logActivity($conn,$_SESSION['user_id'],$_SESSION['fullname'],'Updated leave request #'.$id);
-header('Location:index.php?success='.urlencode('Leave request updated.'));
-exit();
-
+require_once("../config/auth.php");require_once("../config/DataBase.php");require_once("../config/permissions.php");require_once("../config/functions.php");requireRole(["Admin","Manager"]);
+if($_SERVER['REQUEST_METHOD']!=='POST'){header('Location:index.php');exit();}$id=(int)($_POST['id']??0);$type=$_POST['leave_type']??'';$start=$_POST['start_date']??'';$end=$_POST['end_date']??'';$reason=trim($_POST['reason']??'');$allowed=['Annual','Sick','Maternity','Paternity','Study','Unpaid','Other'];if($id<=0||!in_array($type,$allowed,true)||$start===''||$end===''||$start>$end){header('Location:index.php');exit();}
+$stmt=$conn->prepare('UPDATE leave_requests SET leave_type=?,start_date=?,end_date=?,reason=? WHERE id=?');$stmt->bind_param('ssssi',$type,$start,$end,$reason,$id);$stmt->execute();logActivity($conn,$_SESSION['user_id'],$_SESSION['fullname'],'Updated leave request #'.$id);header('Location:index.php?success='.urlencode('Leave request updated.'));exit();

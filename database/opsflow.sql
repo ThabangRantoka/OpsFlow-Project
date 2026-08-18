@@ -189,7 +189,7 @@ CREATE TABLE `employees` (
   `id` int(11) NOT NULL,
   `employee_number` varchar(20) NOT NULL,
   `fullname` varchar(100) NOT NULL,
-  `gender` enum('Male','Female') NOT NULL,
+  `gender` enum('Male','Female') DEFAULT NULL,
   `email` varchar(100) NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `department` varchar(100) DEFAULT NULL,

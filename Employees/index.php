@@ -1,13 +1,9 @@
 <?php
 require_once("../config/auth.php");
-
 require_once("../config/DataBase.php");
-
 require_once("../config/permissions.php");
 
-
 requireRole(["Admin", "Manager", "Employee"]);
-
 
 
 
@@ -19,68 +15,44 @@ requireRole(["Admin", "Manager", "Employee"]);
 
 function e($value)
 {
-
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
-
 }
-
 
 function employeeInitials($name)
 {
-
     $name = trim((string)$name);
 
-
     if ($name === '') {
-
         return "EM";
-
     }
-
 
     $parts = preg_split('/\s+/', $name);
 
-
     $initials = '';
 
-
     foreach (array_slice($parts, 0, 2) as $part) {
-
         if ($part !== '') {
-
             $initials .= strtoupper(substr($part, 0, 1));
-
         }
-
     }
 
-
     return $initials ?: "EM";
-
 }
-
 
 function employeeStatusClass($status)
 {
-
     switch ($status) {
-
         case "Active":
             return "active";
-
 
         case "Leave":
             return "leave";
 
-
         case "Inactive":
         default:
             return "inactive";
-
     }
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -89,18 +61,12 @@ function employeeStatusClass($status)
 */
 
 $search = trim($_GET["search"] ?? "");
-
 $department = trim($_GET["department"] ?? "");
-
 $status = trim($_GET["status"] ?? "");
 
-
 $where = [];
-
 $params = [];
-
 $types = "";
-
 
 /*
 |--------------------------------------------------------------------------
@@ -109,7 +75,6 @@ $types = "";
 */
 
 if ($search !== "") {
-
 
     $where[] = "
         (
@@ -120,23 +85,15 @@ if ($search !== "") {
         )
     ";
 
-
     $like = "%" . $search . "%";
 
-
     $params[] = $like;
-
     $params[] = $like;
-
     $params[] = $like;
-
     $params[] = $like;
-
 
     $types .= "ssss";
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -146,17 +103,12 @@ if ($search !== "") {
 
 if ($department !== "") {
 
-
     $where[] = "department = ?";
-
 
     $params[] = $department;
 
-
     $types .= "s";
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -166,17 +118,12 @@ if ($department !== "") {
 
 if ($status !== "") {
 
-
     $where[] = "status = ?";
-
 
     $params[] = $status;
 
-
     $types .= "s";
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -201,16 +148,11 @@ $sql = "
     FROM employees
 ";
 
-
 if (!empty($where)) {
-
     $sql .= " WHERE " . implode(" AND ", $where);
-
 }
 
-
 $sql .= " ORDER BY id DESC";
-
 
 /*
 |--------------------------------------------------------------------------
@@ -220,38 +162,28 @@ $sql .= " ORDER BY id DESC";
 
 $stmt = $conn->prepare($sql);
 
-
 if (!$stmt) {
-
     die(
         "Employee query preparation failed: "
         . e($conn->error)
     );
-
 }
 
-
 if (!empty($params)) {
-
 
     $stmt->bind_param(
         $types,
         ...$params
     );
-
 }
 
-
 if (!$stmt->execute()) {
-
 
     die(
         "Employee query failed: "
         . e($stmt->error)
     );
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -263,7 +195,6 @@ if (!$stmt->execute()) {
 */
 
 $stmt->store_result();
-
 
 $stmt->bind_result(
     $employeeId,
@@ -280,12 +211,9 @@ $stmt->bind_result(
     $createdAt
 );
 
-
 $employees = [];
 
-
 while ($stmt->fetch()) {
-
 
     $employees[] = [
         "id" => $employeeId,
@@ -301,12 +229,9 @@ while ($stmt->fetch()) {
         "status" => $employeeStatus,
         "created_at" => $createdAt
     ];
-
 }
 
-
 $stmt->close();
-
 
 /*
 |--------------------------------------------------------------------------
@@ -316,28 +241,20 @@ $stmt->close();
 
 $departments = [];
 
-
 $departmentQuery = $conn->query("
     SELECT department_name
     FROM departments
     ORDER BY department_name ASC
 ");
 
-
 if ($departmentQuery) {
 
-
     while ($row = $departmentQuery->fetch_assoc()) {
-
         $departments[] = $row["department_name"];
-
     }
 
-
     $departmentQuery->free();
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -347,26 +264,19 @@ if ($departmentQuery) {
 
 $count = 0;
 
-
 $countQuery = $conn->query("
     SELECT COUNT(*) AS total
     FROM employees
 ");
 
-
 if ($countQuery) {
-
 
     $countRow = $countQuery->fetch_assoc();
 
-
     $count = (int)$countRow["total"];
 
-
     $countQuery->free();
-
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -375,48 +285,37 @@ if ($countQuery) {
 */
 
 $success = trim($_GET["success"] ?? "");
-
 $error = trim($_GET["error"] ?? "");
-
 
 ?>
 <!DOCTYPE html>
-
 <html lang="en">
-
 
 <head>
 
-
 <meta charset="UTF-8">
-
 
 <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
 >
 
-
 <title>OpsFlow | Employees</title>
-
 
 <link
     rel="stylesheet"
     href="../Assets/CSS/style.css"
 >
 
-
 <link
     rel="stylesheet"
     href="../Assets/CSS/dashboard.css"
 >
 
-
 <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
 >
-
 
 <style>
 
@@ -623,68 +522,44 @@ $error = trim($_GET["error"] ?? "");
 
 </style>
 
-
 </head>
-
 
 <body>
 
-
 <div class="dashboard">
 
-
-<?php include("../Includes/sidebar.php");
- 
-?>
+<?php include("../Includes/sidebar.php"); ?>
 
 <main class="main-content">
 
-
-<?php include("../Includes/header.php");
- 
-?>
+<?php include("../Includes/header.php"); ?>
 
 <section class="page-heading">
 
-
     <div class="page-toolbar">
-
 
         <div>
 
-
             <h1>Employees</h1>
 
-
             <p>
-
-                
-<?php echo $count;
- 
-?>
+                <?php echo $count; ?>
                 people on record
             </p>
 
-
         </div>
 
-
         <div class="actions">
-
 
             <a
                 href="../Reports/exports/export_employees.php"
                 class="btn btn-light"
             >
-
-                <i class="fa-solid fa-download">
-</i>
+                <i class="fa-solid fa-download"></i>
                 Export
             </a>
 
-
-            
-<?php
+            <?php
             if (
                 isset($_SESSION["role"]) &&
                 in_array(
@@ -693,77 +568,45 @@ $error = trim($_GET["error"] ?? "");
                     true
                 )
             ) {
-
-            
-?>
+            ?>
 
                 <a
                     href="add.php"
                     class="btn btn-primary"
                 >
-
-                    <i class="fa-solid fa-plus">
-</i>
+                    <i class="fa-solid fa-plus"></i>
                     Add employee
                 </a>
 
-
-            
-<?php }
- 
-?>
+            <?php } ?>
 
         </div>
 
-
     </div>
-
 
 </section>
 
-
-<?php if ($success !== "") {
- 
-?>
+<?php if ($success !== "") { ?>
 
     <div class="employee-alert employee-alert-success">
-
-        
-<?php echo e($success);
- 
-?>
+        <?php echo e($success); ?>
     </div>
 
+<?php } ?>
 
-<?php }
- 
-?>
-
-<?php if ($error !== "") {
- 
-?>
+<?php if ($error !== "") { ?>
 
     <div class="employee-alert employee-alert-error">
-
-        
-<?php echo e($error);
- 
-?>
+        <?php echo e($error); ?>
     </div>
 
-
-<?php }
- 
-?>
+<?php } ?>
 
 <div class="employees-page-card">
 
-
     <!-- FILTERS -->
 
-
     <div class="employees-filter">
-
 
         <form
             class="employees-filter-form"
@@ -771,106 +614,66 @@ $error = trim($_GET["error"] ?? "");
             action="index.php"
         >
 
-
             <input
                 type="text"
                 name="search"
-                value="
-<?php echo e($search);
- 
-?>"
+                value="<?php echo e($search); ?>"
                 placeholder="Search name, number, email or position"
             >
 
-
             <select name="department">
-
 
                 <option value="">
                     All departments
                 </option>
 
-
-                
-<?php foreach ($departments as $dept) {
- 
-?>
+                <?php foreach ($departments as $dept) { ?>
 
                     <option
-                        value="
-<?php echo e($dept);
- 
-?>"
-                        
-<?php
+                        value="<?php echo e($dept); ?>"
+                        <?php
                         echo (
                             $department === $dept
                             ? "selected"
                             : ""
                         );
-
-                        
-?>
+                        ?>
                     >
-
-                        
-<?php echo e($dept);
- 
-?>
+                        <?php echo e($dept); ?>
                     </option>
 
-
-                
-<?php }
- 
-?>
+                <?php } ?>
 
             </select>
 
-
             <select name="status">
-
 
                 <option value="">
                     All statuses
                 </option>
 
-
                 <option
                     value="Active"
-                    
-<?php echo $status === "Active" ? "selected" : "";
- 
-?>
+                    <?php echo $status === "Active" ? "selected" : ""; ?>
                 >
                     Active
                 </option>
 
-
                 <option
                     value="Leave"
-                    
-<?php echo $status === "Leave" ? "selected" : "";
- 
-?>
+                    <?php echo $status === "Leave" ? "selected" : ""; ?>
                 >
                     On Leave
                 </option>
 
-
                 <option
                     value="Inactive"
-                    
-<?php echo $status === "Inactive" ? "selected" : "";
- 
-?>
+                    <?php echo $status === "Inactive" ? "selected" : ""; ?>
                 >
                     Inactive
                 </option>
 
-
             </select>
-
 
             <button
                 type="submit"
@@ -879,11 +682,7 @@ $error = trim($_GET["error"] ?? "");
                 Filter
             </button>
 
-
-            
-<?php if ($search !== "" || $department !== "" || $status !== "") {
- 
-?>
+            <?php if ($search !== "" || $department !== "" || $status !== "") { ?>
 
                 <a
                     href="index.php"
@@ -892,213 +691,144 @@ $error = trim($_GET["error"] ?? "");
                     Clear
                 </a>
 
-
-            
-<?php }
- 
-?>
+            <?php } ?>
 
         </form>
 
-
     </div>
-
 
     <!-- EMPLOYEE TABLE -->
 
-
     <div class="employees-table-wrapper">
-
 
         <table class="ops-employees-table">
 
-
             <thead>
 
-
                 <tr>
-
 
                     <th>
                         Employee
                     </th>
 
-
                     <th>
                         Department
                     </th>
-
 
                     <th>
                         Position
                     </th>
 
-
                     <th>
                         Hired
                     </th>
-
 
                     <th>
                         Salary
                     </th>
 
-
                     <th>
                         Status
                     </th>
 
-
                     <th>
-
                     </th>
-
 
                 </tr>
 
-
             </thead>
-
 
             <tbody>
 
+            <?php if (!empty($employees)) { ?>
 
-            
-<?php if (!empty($employees)) {
- 
-?>
-
-                
-<?php foreach ($employees as $employee) {
- 
-?>
+                <?php foreach ($employees as $employee) { ?>
 
                     <tr>
 
-
                         <!-- Employee -->
-
 
                         <td>
 
-
                             <div class="employee-cell-new">
-
 
                                 <div class="employee-avatar-new">
 
-
-                                    
-<?php
+                                    <?php
                                     echo e(
                                         employeeInitials(
                                             $employee["fullname"]
                                         )
                                     );
-
-                                    
-?>
+                                    ?>
 
                                 </div>
-
 
                                 <div>
 
-
                                     <span class="employee-name-new">
 
-
-                                        
-<?php
+                                        <?php
                                         echo e(
                                             $employee["fullname"]
                                         );
-
-                                        
-?>
+                                        ?>
 
                                     </span>
-
 
                                     <span class="employee-meta-new">
 
-
-                                        
-<?php
+                                        <?php
                                         echo e(
                                             $employee["employee_number"]
                                         );
-
-                                        
-?>
+                                        ?>
 
                                         ·
 
-                                        
-<?php
+                                        <?php
                                         echo e(
                                             $employee["email"]
                                         );
-
-                                        
-?>
+                                        ?>
 
                                     </span>
 
-
                                 </div>
-
 
                             </div>
 
-
                         </td>
-
 
                         <!-- Department -->
 
-
                         <td>
 
-
-                            
-<?php
+                            <?php
                             echo e(
                                 $employee["department"] ?: "—"
                             );
-
-                            
-?>
+                            ?>
 
                         </td>
-
 
                         <!-- Position -->
 
-
                         <td>
 
-
-                            
-<?php
+                            <?php
                             echo e(
                                 $employee["position"] ?: "—"
                             );
-
-                            
-?>
+                            ?>
 
                         </td>
 
-
                         <!-- Hire date -->
-
 
                         <td>
 
-
-                            
-<?php
+                            <?php
 
                             if (
                                 !empty(
@@ -1106,11 +836,9 @@ $error = trim($_GET["error"] ?? "");
                                 )
                             ) {
 
-
                                 $timestamp = strtotime(
                                     $employee["hire_date"]
                                 );
-
 
                                 echo $timestamp
                                     ? e(
@@ -1121,122 +849,83 @@ $error = trim($_GET["error"] ?? "");
                                     )
                                     : "—";
 
-
-                            }
- else {
-
+                            } else {
 
                                 echo "—";
 
-
                             }
 
-
-                            
-?>
+                            ?>
 
                         </td>
 
-
                         <!-- Salary -->
-
 
                         <td class="employee-money">
 
                             R
-                            
-<?php
+                            <?php
                             echo number_format(
                                 (float)$employee["salary"],
                                 0,
                                 ".",
                                 " "
                             );
-
-                            
-?>
+                            ?>
 
                         </td>
 
-
                         <!-- Status -->
-
 
                         <td>
 
-
                             <span
-                                class="badge 
-<?php
+                                class="badge <?php
                                     echo e(
                                         employeeStatusClass(
                                             $employee["status"]
                                         )
                                     );
-
-                                
-?>"
+                                ?>"
                             >
 
-
-                                
-<?php
+                                <?php
 
                                 if (
                                     $employee["status"] === "Leave"
                                 ) {
 
-
                                     echo "On Leave";
 
-
-                                }
- else {
-
+                                } else {
 
                                     echo e(
                                         $employee["status"]
                                     );
 
-
                                 }
 
-
-                                
-?>
+                                ?>
 
                             </span>
 
-
                         </td>
-
 
                         <!-- Actions -->
 
-
                         <td>
-
 
                             <div class="employee-actions-new">
 
-
                                 <a
                                     class="employee-view"
-                                    href="view.php?id=
-<?php echo (int)$employee["id"];
- 
-?>"
+                                    href="view.php?id=<?php echo (int)$employee["id"]; ?>"
                                     title="View employee"
                                 >
-
-                                    <i class="fa-regular fa-eye">
-</i>
-
+                                    <i class="fa-regular fa-eye"></i>
                                 </a>
 
-
-                                
-<?php
+                                <?php
                                 if (
                                     isset($_SESSION["role"]) &&
                                     in_array(
@@ -1245,145 +934,85 @@ $error = trim($_GET["error"] ?? "");
                                         true
                                     )
                                 ) {
-
-                                
-?>
+                                ?>
 
                                     <a
                                         class="employee-edit"
-                                        href="edit.php?id=
-<?php echo (int)$employee["id"];
- 
-?>"
+                                        href="edit.php?id=<?php echo (int)$employee["id"]; ?>"
                                         title="Edit employee"
                                     >
-
-                                        <i class="fa-solid fa-pen">
-</i>
-
+                                        <i class="fa-solid fa-pen"></i>
                                     </a>
 
+                                <?php } ?>
 
-                                
-<?php }
- 
-?>
-
-                                
-<?php
+                                <?php
                                 if (
                                     isset($_SESSION["role"]) &&
                                     $_SESSION["role"] === "Admin"
                                 ) {
-
-                                
-?>
+                                ?>
 
                                     <a
                                         class="employee-delete"
-                                        href="delete.php?id=
-<?php echo (int)$employee["id"];
- 
-?>"
+                                        href="delete.php?id=<?php echo (int)$employee["id"]; ?>"
                                         title="Delete employee"
                                         onclick="return confirm('Delete this employee?');"
                                     >
-
-                                        <i class="fa-regular fa-trash-can">
-</i>
-
+                                        <i class="fa-regular fa-trash-can"></i>
                                     </a>
 
-
-                                
-<?php }
- 
-?>
+                                <?php } ?>
 
                             </div>
 
-
                         </td>
-
 
                     </tr>
 
+                <?php } ?>
 
-                
-<?php }
- 
-?>
-
-            
-<?php }
- else {
- 
-?>
+            <?php } else { ?>
 
                 <tr>
-
 
                     <td
                         colspan="7"
                         class="employee-empty"
                     >
 
-
                         <strong>
                             No employees found
                         </strong>
 
-
-                        
-<?php if ($search || $department || $status) {
- 
-?>
+                        <?php if ($search || $department || $status) { ?>
 
                             Try changing your search or filters.
 
-                        
-<?php }
- else {
- 
-?>
+                        <?php } else { ?>
 
                             No employees have been added yet.
 
-                        
-<?php }
- 
-?>
+                        <?php } ?>
 
                     </td>
 
-
                 </tr>
 
-
-            
-<?php }
- 
-?>
+            <?php } ?>
 
             </tbody>
 
-
         </table>
-
 
     </div>
 
-
 </div>
-
 
 </main>
 
-
 </div>
 
-
 </body>
-
 
 </html>

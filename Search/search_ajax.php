@@ -1,29 +1,19 @@
 <?php
 
 require_once("../config/auth.php");
-
 require_once("../config/DataBase.php");
-
 
 $q = "";
 
-
 if(isset($_GET["q"])){
-
     $q = trim($_GET["q"]);
-
 }
-
 
 if($q==""){
-
     exit();
-
 }
 
-
 $search="%".$q."%";
-
 
 /*
 =====================================
@@ -43,24 +33,17 @@ OR employee_number LIKE ?
 LIMIT 5
 ");
 
-
 $stmt->bind_param("ss",$search,$search);
-
 
 $stmt->execute();
 
-
 $result=$stmt->get_result();
-
 
 if($result->num_rows>0){
 
-
 echo "<div class='search-title'>👥 Employees</div>";
 
-
 while($row=$result->fetch_assoc()){
-
 
 echo "
 
@@ -78,12 +61,9 @@ href='../Employees/view.php?id=".$row["id"]."'>
 
 ";
 
-
 }
 
-
 }
-
 
 /*
 =====================================
@@ -101,24 +81,17 @@ department_name LIKE ?
 LIMIT 5
 ");
 
-
 $stmt->bind_param("s",$search);
-
 
 $stmt->execute();
 
-
 $result=$stmt->get_result();
-
 
 if($result->num_rows>0){
 
-
 echo "<div class='search-title'>🏢 Departments</div>";
 
-
 while($row=$result->fetch_assoc()){
-
 
 echo "
 
@@ -132,12 +105,9 @@ href='../Departments/view.php?id=".$row["id"]."'>
 
 ";
 
-
 }
 
-
 }
-
 
 /*
 =====================================
@@ -155,24 +125,17 @@ project_name LIKE ?
 LIMIT 5
 ");
 
-
 $stmt->bind_param("s",$search);
-
 
 $stmt->execute();
 
-
 $result=$stmt->get_result();
-
 
 if($result->num_rows>0){
 
-
 echo "<div class='search-title'>📁 Projects</div>";
 
-
 while($row=$result->fetch_assoc()){
-
 
 echo "
 
@@ -186,12 +149,9 @@ href='../Projects/view.php?id=".$row["id"]."'>
 
 ";
 
-
 }
 
-
 }
-
 
 /*
 =====================================
@@ -210,24 +170,17 @@ fullname LIKE ?
 LIMIT 5
 ");
 
-
 $stmt->bind_param("s",$search);
-
 
 $stmt->execute();
 
-
 $result=$stmt->get_result();
-
 
 if($result->num_rows>0){
 
-
 echo "<div class='search-title'>👤 Users</div>";
 
-
 while($row=$result->fetch_assoc()){
-
 
 echo "
 
@@ -245,14 +198,10 @@ href='../Users/view.php?id=".$row["id"]."'>
 
 ";
 
-
 }
 
-
 }
-
 
 $conn->close();
-
 
 ?>
