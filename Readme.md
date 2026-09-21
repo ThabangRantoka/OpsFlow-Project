@@ -66,3 +66,26 @@ must match the role stored on the account, otherwise the login is rejected.
 - All database access uses prepared statements.
 - Profile and user photos are uploaded to `Profile/photos/` and `Users/photos/` — keep those
   folders writable.
+
+## Project Screenshots
+
+### Add New Program
+![Add New Program](Screenshot (937).png)
+
+### Program List
+![Program List](Screenshot (938).png)
+
+### More Programs
+![More Programs](Screenshot (939).png)
+### More Programs
+![More Programs](Screenshot (940).png)
+### More Programs
+![More Programs](Screenshot (941).png)
+### More Programs
+![More Programs](Screenshot (942).png)
+### More Programs
+![More Programs](Screenshot (943).png)
+### More Programs
+![More Programs](Screenshot (944).png)
+### More Programs
+![More Programs](Screenshot (945).png)
