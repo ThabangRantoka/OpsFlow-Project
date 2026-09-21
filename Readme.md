@@ -70,22 +70,28 @@ must match the role stored on the account, otherwise the login is rejected.
 ## Project Screenshots
 
 ### Add New Program
-![Add New Program](Screenshot (937).png)
+![Add New Program](<Screenshot (937).png>)
 
 ### Program List
-![Program List](Screenshot (938).png)
+![Program List](<Screenshot (938).png>)
 
-### More Programs
-![More Programs](Screenshot (939).png)
-### More Programs
-![More Programs](Screenshot (940).png)
-### More Programs
-![More Programs](Screenshot (941).png)
-### More Programs
-![More Programs](Screenshot (942).png)
-### More Programs
-![More Programs](Screenshot (943).png)
-### More Programs
-![More Programs](Screenshot (944).png)
-### More Programs
-![More Programs](Screenshot (945).png)
+### Screenshot 3
+![Screenshot 3](<Screenshot (939).png>)
+
+### Screenshot 4
+![Screenshot 4](<Screenshot (940).png>)
+
+### Screenshot 5
+![Screenshot 5](<Screenshot (941).png>)
+
+### Screenshot 6
+![Screenshot 6](<Screenshot (942).png>)
+
+### Screenshot 7
+![Screenshot 7](<Screenshot (943).png>)
+
+### Screenshot 8
+![Screenshot 8](<Screenshot (944).png>)
+
+### Screenshot 9
+![Screenshot 9](<Screenshot (945).png>)
