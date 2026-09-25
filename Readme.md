@@ -1,3 +1,5 @@
+
+
 # OpsFlow — Business Operations Management System (PHP + MySQL)
 
 A role-based operations management system built with **PHP 8**, **MySQL/MariaDB** and vanilla CSS.
@@ -66,37 +68,9 @@ must match the role stored on the account, otherwise the login is rejected.
 - All database access uses prepared statements.
 - Profile and user photos are uploaded to `Profile/photos/` and `Users/photos/` — keep those
   folders writable.
-
-## Project Demo
-
-
+  
+### Demo Video
 
 
-## Project Screenshots
+https://github.com/user-attachments/assets/fdabcef7-b48f-4dff-a4a8-4d4f842430f8
 
-### Add New Program
-![Add New Program](<Screenshot (937).png>)
-
-### Program List
-![Program List](<Screenshot (938).png>)
-
-### Screenshot 3
-![Screenshot 3](<Screenshot (939).png>)
-
-### Screenshot 4
-![Screenshot 4](<Screenshot (940).png>)
-
-### Screenshot 5
-![Screenshot 5](<Screenshot (941).png>)
-
-### Screenshot 6
-![Screenshot 6](<Screenshot (942).png>)
-
-### Screenshot 7
-![Screenshot 7](<Screenshot (943).png>)
-
-### Screenshot 8
-![Screenshot 8](<Screenshot (944).png>)
-
-### Screenshot 9
-![Screenshot 9](<Screenshot (945).png>)
